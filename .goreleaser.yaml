@@ -1,0 +1,22 @@
+project_name: memr
+
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/memr
+    id: "memr"
+    binary: memr
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^misc:'

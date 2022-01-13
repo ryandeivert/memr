@@ -1,0 +1,32 @@
+# Ubuntu
+- bento/ubuntu-12.04  # ubuntu 12.04
+- ubuntu/trusty64     # ubuntu 14.04
+- ubuntu/xenial64     # ubuntu 16.04
+- ubuntu/bionic64     # ubuntu 18.04
+- ubuntu/focal64      # ubuntu 20.04
+- ubuntu/hirsute64    # ubuntu 21.04
+- ubuntu/impish64     # ubuntu 21.10
+
+# Centos
+- bento/centos-6  # centos 6
+- bento/centos-7  # centos 7.
+- bento/centos-8  # centos 8
+
+# Oracle
+- bento/oracle-6  # oracle 6
+- bento/oracle-7  # oracle 7.
+- bento/oracle-8  # oracle 8
+
+# RHEL (SKIP: synced folders not working)
+# - generic/rhel6  # rhel 6
+# - generic/rhel7  # rhel 7
+# - generic/rhel8  # rhel 8
+
+# Debian
+- debian/contrib-jessie64   # debian 8
+- debian/contrib-stretch64  # debian 9
+- debian/contrib-buster64   # debian 10
+- debian/bullseye64         # debian 11
+
+# Amazon Linux 2
+- bento/amazonlinux-2  # Amazon Linux 2

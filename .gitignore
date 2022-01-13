@@ -1,0 +1,8 @@
+# Vagrant files
+*.log
+/.vagrant
+
+# goreleaser
+dist/
+
+*.memr
