@@ -12,10 +12,10 @@
 extensibility.
 
 * Provides a golang `io.ReadCloser` interface, as `memr.Reader`, over the memory source
-* Callers to do whatever they please with the data that is read through the `memr.Reader`
+* Callers can do whatever they please with the data that is read through the `memr.Reader`
   * write to a local file
-  * stream it to an S3 bucket
-  * compress it with a desired algorithm before writing, and so on
+  * stream to an S3 bucket
+  * compress with a desired algorithm before writing, and so on
 
 The major benefit of `memr` is that it supports _streaming_ memory data, enabling writing off-host
 without first copying to the local disk.
