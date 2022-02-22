@@ -3,7 +3,7 @@ package main
 /*
 
 This CLI demonstrates using memr both for writing to a file and copying
-to S3 using s3manager.Uploader. However, this could be extended to do
+to S3 using manager.Uploader. However, this could be extended to do
 things like copying to os.Stdout, using io.Copy(os.Stdout, reader), or
 uploading to other cloud providers.
 
@@ -15,7 +15,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/golang/snappy"
 	"github.com/ryandeivert/memr"
 	"github.com/spf13/cobra"
@@ -23,7 +23,7 @@ import (
 
 var (
 	version               = "development"
-	concurrency           = s3manager.DefaultUploadConcurrency
+	concurrency           = manager.DefaultUploadConcurrency
 	compress              = true
 	progress              = true
 	allDevices            = []string{"/proc/kcore", "/dev/crash", "/dev/mem"}
