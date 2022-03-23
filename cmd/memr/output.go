@@ -27,14 +27,13 @@ func S3Writer(reader io.ReadCloser, compress bool, region, bucket, key string, c
 	// Set size of multi part upload; by default the minimal is 5Mb
 	// A lower value here will have a lesser impact on memory pressure, and should be considered
 	// Increasing this value will directly impact how much memory we use
-	// Minimal size when possible will allow max 50GB memory size (5MB * 10.000)
-	var partSize int64
-	if uint64(manager.MaxUploadParts) * uint64(manager.MinUploadPartSize) > memory_size {
-		partSize = manager.MinUploadPartSize
-	} else {
+	// Minimal size when possible will allow max 50GB memory size (5MB * 10,000)
+	const padSize = 1024 * 1024  // Use an extra mb as padding, just in case
+	var partSize int64 = manager.MinUploadPartSize  // Default to minimum part size (5MB)
+	if memory_size + padSize > uint64(manager.MaxUploadParts) * uint64(manager.MinUploadPartSize) {
 		// For bigger memory than 50GB, we calculate the size of the part
 		// part size = (memory size / max upload parts) + 1MB
-		partSize = int64(memory_size / uint64(manager.MaxUploadParts)) + (1024 * 1024)
+		partSize = int64(memory_size / uint64(manager.MaxUploadParts)) + padSize
 	}
 	log.Printf("[DEBUG] S3 part size set up to %d MBs", partSize/1024/1024)
 
