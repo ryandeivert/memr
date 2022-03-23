@@ -4,7 +4,6 @@
 - ubuntu/xenial64     # ubuntu 16.04
 - ubuntu/bionic64     # ubuntu 18.04
 - ubuntu/focal64      # ubuntu 20.04
-- ubuntu/hirsute64    # ubuntu 21.04
 - ubuntu/impish64     # ubuntu 21.10
 
 # Centos
