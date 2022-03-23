@@ -102,7 +102,7 @@ memr --compress=false  --local-file <FILE>`,
 		} else {
 
 			// Not using a local file, so assume s3
-			res, err := S3Writer(reader, compress, region, s3Bucket, s3ObjectKey, concurrency)
+			res, err := S3Writer(reader, compress, region, s3Bucket, s3ObjectKey, concurrency, reader.Size())
 			if err != nil {
 				return err
 			}
