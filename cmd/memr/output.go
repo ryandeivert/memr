@@ -14,7 +14,7 @@ import (
 	"github.com/golang/snappy"
 )
 
-func S3Writer(reader io.ReadCloser, compress bool, region, bucket, key string, concurrency int, memory_size uint64) (*manager.UploadOutput, error) {
+func S3Writer(reader io.ReadCloser, compress, useAccelerate bool, region, bucket, key string, concurrency int, memory_size uint64) (*manager.UploadOutput, error) {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		// client will only use this region if none is otherwise set using AWS_REGION or AWS_DEFAULT_REGION
@@ -28,17 +28,21 @@ func S3Writer(reader io.ReadCloser, compress bool, region, bucket, key string, c
 	// A lower value here will have a lesser impact on memory pressure, and should be considered
 	// Increasing this value will directly impact how much memory we use
 	// Minimal size when possible will allow max 50GB memory size (5MB * 10,000)
-	const padSize = 1024 * 1024  // Use an extra mb as padding, just in case
-	var partSize int64 = manager.MinUploadPartSize  // Default to minimum part size (5MB)
-	if memory_size + padSize > uint64(manager.MaxUploadParts) * uint64(manager.MinUploadPartSize) {
+	const padSize = 1024 * 1024                    // Use an extra mb as padding, just in case
+	var partSize int64 = manager.MinUploadPartSize // Default to minimum part size (5MB)
+	if memory_size+padSize > uint64(manager.MaxUploadParts)*uint64(manager.MinUploadPartSize) {
 		// For bigger memory than 50GB, we calculate the size of the part
 		// part size = (memory size / max upload parts) + 1MB
-		partSize = int64(memory_size / uint64(manager.MaxUploadParts)) + padSize
+		partSize = int64(memory_size/uint64(manager.MaxUploadParts)) + padSize
 	}
 	log.Printf("[DEBUG] S3 part size set up to %d MBs", partSize/1024/1024)
 
+	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.UseAccelerate = useAccelerate
+	})
+
 	// Create an uploader with the session and custom options
-	uploader := manager.NewUploader(s3.NewFromConfig(cfg), func(u *manager.Uploader) {
+	uploader := manager.NewUploader(s3Client, func(u *manager.Uploader) {
 		u.PartSize = partSize
 		u.Concurrency = concurrency
 

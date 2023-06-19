@@ -25,6 +25,7 @@ var bucketFlag = flag.String("bucket", "", "S3 bucket to which memory should be 
 var keyFlag = flag.String("key", "", "key for object in S3")
 var compressionFlag = flag.String("compression", "snappy", "type of compression to use for output (snappy, lz4, zlib, gzip, none)")
 var concurrencyFlag = flag.Int("threads", manager.DefaultUploadConcurrency, "number of goroutines to use for upload")
+var useAccelerate = flag.Bool("accelerate", false, "true if S3 Transfer Acceleration should be used")
 
 func main() {
 
@@ -93,8 +94,12 @@ func copyToS3(reader io.ReadCloser, compressor compressorFunc, bucket, key strin
 		return nil, err
 	}
 
+	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.UseAccelerate = *useAccelerate
+	})
+
 	// Create an uploader with the session and custom options
-	uploader := manager.NewUploader(s3.NewFromConfig(cfg), func(u *manager.Uploader) {
+	uploader := manager.NewUploader(s3Client, func(u *manager.Uploader) {
 		u.PartSize = manager.MinUploadPartSize // 5MB (smallest allowed)
 
 		// Concurrency: 5 goroutines is the default. A lower value here will

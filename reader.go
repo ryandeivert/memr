@@ -100,10 +100,11 @@ func Probe(options ...func(*Reader)) (*Reader, error) {
 // or SourceMem (/dev/mem). Optional options can be provided for the resulting Reader.
 //
 // Example:
+//
 //	// Omit headers from the resulting image (raw) and suppress progress
 //	reader, err := memr.NewReader(memr.SourceKcore, func(m *memr.Reader) {
 //		m.WithProgress = false
-// 		m.PageHeaderProvider = nil
+//		m.PageHeaderProvider = nil
 //	})
 func NewReader(source MemSource, options ...func(*Reader)) (reader *Reader, err error) {
 
