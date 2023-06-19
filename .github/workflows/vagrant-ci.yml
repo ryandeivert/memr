@@ -6,10 +6,11 @@ on:
       - v*
     branches:
       - main
+  pull_request:
 
 jobs:
   vagrant:
-    runs-on: macos-10.15
+    runs-on: macos-latest
 
     strategy:
       fail-fast: false
@@ -20,18 +21,21 @@ jobs:
           - ubuntu/trusty64     # ubuntu 14.04
           - ubuntu/xenial64     # ubuntu 16.04
           - ubuntu/bionic64     # ubuntu 18.04
-          - ubuntu/focal64      # ubuntu 20.04
-          - ubuntu/impish64     # ubuntu 21.10
+          # - ubuntu/focal64      # ubuntu 20.04
+          - ubuntu/jammy64      # ubuntu 22.04
+          - ubuntu/kinetic64    # ubuntu 22.10
+          - ubuntu/lunar64      # ubuntu 23.04
 
           # Centos
           - bento/centos-6  # centos 6
-          - bento/centos-7  # centos 7.
+          - bento/centos-7  # centos 7
           - bento/centos-8  # centos 8
 
           # Oracle
           - bento/oracle-6  # oracle 6
-          - bento/oracle-7  # oracle 7.
+          - bento/oracle-7  # oracle 7
           - bento/oracle-8  # oracle 8
+          - bento/oracle-9  # oracle 9
 
           # RHEL (SKIP: synced folders not working)
           # - generic/rhel6  # rhel 6
@@ -43,16 +47,17 @@ jobs:
           - debian/contrib-stretch64  # debian 9
           - debian/contrib-buster64   # debian 10
           - debian/bullseye64         # debian 11
+          - debian/bookworm64         # debian 12
 
           # Amazon Linux 2
           - bento/amazonlinux-2  # Amazon Linux 2
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: cache vagrant
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile', './.dev/boxes.yaml') }}
@@ -60,7 +65,7 @@ jobs:
             ${{ runner.os }}-vagrant-
 
       - name: cache golang
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/go/pkg/mod
@@ -70,9 +75,9 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: install go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
 
       - name: build
         run: |
