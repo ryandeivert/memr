@@ -25,6 +25,7 @@ var (
 	version               = "development"
 	concurrency           = manager.DefaultUploadConcurrency
 	compress              = true
+	useAccelerate         = false
 	progress              = true
 	allDevices            = []string{"/proc/kcore", "/dev/crash", "/dev/mem"}
 	region                = "us-east-1"
@@ -45,11 +46,14 @@ memr --local-file <FILE>
 Streaming directly to S3 bucket:
 memr --bucket <BUCKET> --key <KEY>
 
+Streaming to S3 with Transfer Acceleration enabled:
+memr --accelerate --bucket <BUCKET> --key <KEY>
+
 Targeting a specific device:
 memr /dev/mem --local-file <FILE>
 
 Skipping compression:
-memr --compress=false  --local-file <FILE>`,
+memr --compress=false --local-file <FILE>`,
 	ValidArgs: allDevices,
 	Args:      cobra.OnlyValidArgs,
 	RunE: func(cmd *cobra.Command, devices []string) (err error) {
@@ -102,7 +106,7 @@ memr --compress=false  --local-file <FILE>`,
 		} else {
 
 			// Not using a local file, so assume s3
-			res, err := S3Writer(reader, compress, region, s3Bucket, s3ObjectKey, concurrency, reader.Size())
+			res, err := S3Writer(reader, compress, useAccelerate, region, s3Bucket, s3ObjectKey, concurrency, reader.Size())
 			if err != nil {
 				return err
 			}
@@ -146,6 +150,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&region, "region", "r", region, "AWS region to use with S3 client")
 	rootCmd.PersistentFlags().StringVarP(&s3Bucket, "bucket", "b", s3Bucket, "S3 bucket to which output should be sent")
 	rootCmd.PersistentFlags().StringVarP(&s3ObjectKey, "key", "k", s3ObjectKey, "key to use for uploading to S3 bucket")
+	rootCmd.PersistentFlags().BoolVarP(&useAccelerate, "accelerate", "a", false, "use S3 Transfer Acceleration")
 	rootCmd.PersistentFlags().StringVarP(&localFile, "local-file", "f", localFile, "local file to write to, instead of S3")
 }
 
